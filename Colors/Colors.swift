@@ -1,6 +1,6 @@
 //
-//  main.swift
-//  PermaWifi
+//  Colors.swift
+//  Colors
 //
 //  Created by Chad Scira on 3/3/15.
 //  Copyright (c) 2015 Chad Scira. All rights reserved.
