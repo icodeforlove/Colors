@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CCE936671AAAF5B800C9AB54 /* Colors.h in Headers */ = {isa = PBXBuildFile; fileRef = CCE936661AAAF5B800C9AB54 /* Colors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CCE9366D1AAAF5B800C9AB54 /* Colors.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE936611AAAF5B800C9AB54 /* Colors.framework */; };
 		CCE936741AAAF5B800C9AB54 /* ColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE936731AAAF5B800C9AB54 /* ColorsTests.swift */; };
+		CCE9367E1AAAF5D200C9AB54 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE9367D1AAAF5D200C9AB54 /* Colors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,10 +25,10 @@
 /* Begin PBXFileReference section */
 		CCE936611AAAF5B800C9AB54 /* Colors.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Colors.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCE936651AAAF5B800C9AB54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CCE936661AAAF5B800C9AB54 /* Colors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
 		CCE9366C1AAAF5B800C9AB54 /* ColorsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColorsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCE936721AAAF5B800C9AB54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCE936731AAAF5B800C9AB54 /* ColorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsTests.swift; sourceTree = "<group>"; };
+		CCE9367D1AAAF5D200C9AB54 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 		CCE936631AAAF5B800C9AB54 /* Colors */ = {
 			isa = PBXGroup;
 			children = (
-				CCE936661AAAF5B800C9AB54 /* Colors.h */,
+				CCE9367D1AAAF5D200C9AB54 /* Colors.swift */,
 				CCE936641AAAF5B800C9AB54 /* Supporting Files */,
 			);
 			path = Colors;
@@ -109,7 +109,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCE936671AAAF5B800C9AB54 /* Colors.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCE9367E1AAAF5D200C9AB54 /* Colors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +315,7 @@
 		CCE936781AAAF5B800C9AB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -326,12 +327,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		CCE936791AAAF5B800C9AB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -397,6 +400,7 @@
 				CCE936791AAAF5B800C9AB54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCE9367A1AAAF5B800C9AB54 /* Build configuration list for PBXNativeTarget "ColorsTests" */ = {
 			isa = XCConfigurationList;
@@ -405,6 +409,7 @@
 				CCE9367C1AAAF5B800C9AB54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
