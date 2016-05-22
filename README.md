@@ -12,17 +12,17 @@ Colors aims to have a simple and self-explanatory API.
 import Colors
 
 // one style
-println("foo".red);
+println("foo".red)
 
 // multiple styles
-println("foo".red.bold);
+println("foo".red.bold)
 
 // multiple style sets
-println("foo".red.bold + "bar".blue);
+println("foo".red.bold + "bar".blue)
 
 // grouped styling
-println(("foo".red + "bar".blue).bold.underline);
+println(("foo".red + "bar".blue).bold.underline)
 
 // resets
-println(("foo".red + "bar".blue).reset.red.underline.bold);
+println(("foo".red + "bar".blue).reset.red.underline.bold)
 ```
