@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 var colorCodes:[String:Int] = [
     "black": 30,
     "red": 31,
@@ -17,7 +18,7 @@ var colorCodes:[String:Int] = [
     "magenta": 35,
     "cyan": 36,
     "white": 37
-];
+]
 
 var bgColorCodes:[String:Int] = [
     "blackBackground": 40,
@@ -28,7 +29,7 @@ var bgColorCodes:[String:Int] = [
     "magentaBackground": 45,
     "cyanBackground": 46,
     "whiteBackground": 47
-];
+]
 
 var styleCodes:[String:Int] = [
     "reset": 0,
@@ -42,256 +43,203 @@ var styleCodes:[String:Int] = [
     "underlineOff": 24,
     "inverseOff": 27,
     "strikethroughOff": 29
-];
+]
 
-func getCode(key:String) -> Int? {
-    if (colorCodes[key] != nil) {
-        return colorCodes[key];
-    } else if (bgColorCodes[key] != nil) {
-        return bgColorCodes[key];
-    } else if (styleCodes[key] != nil) {
-        return styleCodes[key];
+func getCode(key: String) -> Int? {
+    if colorCodes[key] != nil {
+        return colorCodes[key]
+    }
+    else if bgColorCodes[key] != nil {
+        return bgColorCodes[key]
+    }
+    else if styleCodes[key] != nil {
+        return styleCodes[key]
     }
     
-    return nil;
+    return nil
 }
 
-func addCodeToCodesArray (codes:Array<Int>, code:Int) -> Array<Int> {
-    var result:Array<Int> = codes;
+func addCodeToCodesArray(codes: Array<Int>, code: Int) -> Array<Int> {
+    var result:Array<Int> = codes
     
-    if (contains(colorCodes.values, code)) {
-        result = result.filter { !contains(colorCodes.values, $0) }
-    } else if (contains(bgColorCodes.values, code)) {
-        result = result.filter { !contains(bgColorCodes.values, $0) }
-    } else if (code == 0) {
-        return [];
+    if colorCodes.values.contains(code) {
+        result = result.filter { !colorCodes.values.contains($0) }
+    }
+    else if bgColorCodes.values.contains(code) {
+        result = result.filter { !bgColorCodes.values.contains($0) }
+    }
+    else if code == 0 {
+        return []
     }
     
-    if (!contains(result, code)) {
-        result.append(code);
+    if !result.contains(code) {
+        result.append(code)
     }
     
-    return result;
+    return result
 }
 
 func matchesForRegexInText(regex: String!, text: String!, global: Bool = false) -> [String] {
-    let regex = NSRegularExpression(pattern: regex,
-        options: nil, error: nil)!
-    
+    let regex = try! NSRegularExpression(pattern: regex, options: [])
     let nsString = text as NSString
+    let results = regex.matchesInString(nsString as String, options: [], range: NSMakeRange(0, nsString.length))
     
-    let results = regex.matchesInString(nsString as String,
-        options: nil, range: NSMakeRange(0, nsString.length))
-        as! [NSTextCheckingResult]
-    
-    if (!global && results.count == 1) {
-        var result:[String] = [];
+    if !global && results.count == 1 {
+        var result:[String] = []
         
-        for (var i:Int = 0; i < results[0].numberOfRanges; i++) {
-            result.append(nsString.substringWithRange(results[0].rangeAtIndex(i)));
+        for i in 0..<results[0].numberOfRanges {
+            result.append(nsString.substringWithRange(results[0].rangeAtIndex(i)))
         }
         
-        return result;
-    } else {
-        return map(results) { nsString.substringWithRange($0.range)}
+        return result
+    }
+    else {
+        return results.map { nsString.substringWithRange($0.range) }
     }
 }
 
 struct ANSIGroup {
-    var codes:[Int];
-    var string:String;
+    var codes:[Int]
+    var string:String
+    
     func toString() -> String {
-        
-        return "\u{001B}[" + ";".join(map(codes) {String($0)}) + "m" + string + "\u{001B}[0m";
+        let codeStrings = codes.map { String($0) }
+        return "\u{001B}[" + codeStrings.joinWithSeparator(";") + "m" + string + "\u{001B}[0m"
     }
 }
 
-func parseExistingANSI(string:String) -> [ANSIGroup] {
-    var results:[ANSIGroup] = [];
+func parseExistingANSI(string: String) -> [ANSIGroup] {
+    var results:[ANSIGroup] = []
     
-    var matches = matchesForRegexInText("\\u001B\\[([^m]*)m(.+?)\\u001B\\[0m", string, global: true);
+    let matches = matchesForRegexInText("\\u001B\\[([^m]*)m(.+?)\\u001B\\[0m", text: string, global: true)
     
-    for (index, match) in enumerate(matches) {
-        var parts = matchesForRegexInText("\\u001B\\[([^m]*)m(.+?)\\u001B\\[0m", match),
-        codes = split(parts[1]) {$0 == ";"},
-        string = parts[2];
+    for match in matches {
+        var parts = matchesForRegexInText("\\u001B\\[([^m]*)m(.+?)\\u001B\\[0m", text: match),
+        codes = parts[1].characters.split {$0 == ";"}.map { String($0) },
+        string = parts[2]
         
-        results.append(ANSIGroup(codes: map(codes.filter { $0.toInt() != nil }) {$0.toInt()!}, string: string));
+        results.append(ANSIGroup(codes: codes.filter { Int($0) != nil }.map { Int($0)! }, string: string))
     }
     
-    return results;
+    return results
 }
 
-func format(string:String, command:String) -> String {
+func format(string: String, _ command: String) -> String {
 
-    if (NSProcessInfo.processInfo().environment["DEBUG"] != nil && NSProcessInfo.processInfo().environment["DEBUG"] as! String == "true" && (NSProcessInfo.processInfo().environment["TEST"] == nil || NSProcessInfo.processInfo().environment["TEST"] as! String == "false")) {
-        return string;
+    if (NSProcessInfo.processInfo().environment["DEBUG"] != nil && NSProcessInfo.processInfo().environment["DEBUG"]! as String == "true" && (NSProcessInfo.processInfo().environment["TEST"] == nil || NSProcessInfo.processInfo().environment["TEST"]! as String == "false")) {
+        return string
     }
     
-    var code = getCode(command);
-    var existingANSI = parseExistingANSI(string);
+    let code = getCode(command)
+    let existingANSI = parseExistingANSI(string)
     
-    if (code == nil) {
-        return string;
-    } else if (existingANSI.count > 0) {
-        return "".join(map(existingANSI) {
-            return ANSIGroup(codes: addCodeToCodesArray($0.codes, code!), string: $0.string).toString();
-            })
+    if code == nil {
+        return string
+    } else if existingANSI.count > 0 {
+        return existingANSI.map {
+            return ANSIGroup(codes: addCodeToCodesArray($0.codes, code: code!), string: $0.string).toString()
+            }.joinWithSeparator("")
     } else {
-        var group = ANSIGroup(codes: [code!], string: string);
-        return group.toString();
+        let group = ANSIGroup(codes: [code!], string: string)
+        return group.toString()
     }
 }
 
 public extension String {
     // foregrounds
-    var black:String {
-        get {
-            return format(self, "black");
-        }
-    };
-    var red:String {
-        get {
-            return format(self, "red");
-        }
-    };
-    var green:String {
-        get {
-            return format(self, "green");
-        }
-    };
-    var yellow:String {
-        get {
-            return format(self, "yellow");
-        }
-    };
-    var blue:String {
-        get {
-            return format(self, "blue");
-        }
-    };
-    var magenta:String {
-        get {
-            return format(self, "magenta");
-        }
-    };
-    var cyan:String {
-        get {
-            return format(self, "cyan");
-        }
-    };
-    var white:String {
-        get {
-            return format(self, "white");
-        }
-    };
+    var black: String {
+        return format(self, "black")
+    }
+    var red: String {
+        return format(self, "red")
+    }
+    var green: String {
+        return format(self, "green")
+    }
+    var yellow: String {
+        return format(self, "yellow")
+    }
+    var blue: String {
+        return format(self, "blue")
+    }
+    var magenta: String {
+        return format(self, "magenta")
+    }
+    var cyan: String {
+        return format(self, "cyan")
+    }
+    var white: String {
+        return format(self, "white")
+    }
     
     // backgrounds
-    var blackBackground:String {
-        get {
-            return format(self, "blackBackground");
-        }
-    };
-    var redBackground:String {
-        get {
-            return format(self, "redBackground");
-        }
-    };
-    var greenBackground:String {
-        get {
-            return format(self, "greenBackground");
-        }
-    };
-    var yellowBackground:String {
-        get {
-            return format(self, "yellowBackground");
-        }
-    };
-    var blueBackground:String {
-        get {
-            return format(self, "blueBackground");
-        }
-    };
-    var magentaBackground:String {
-        get {
-            return format(self, "magentaBackground");
-        }
-    };
-    var cyanBackground:String {
-        get {
-            return format(self, "cyanBackground");
-        }
-    };
-    var whiteBackground:String {
-        get {
-            return format(self, "whiteBackground");
-        }
-    };
+    var blackBackground: String {
+        return format(self, "blackBackground")
+    }
+    var redBackground: String {
+        return format(self, "redBackground")
+    }
+    var greenBackground: String {
+        return format(self, "greenBackground")
+    }
+    var yellowBackground: String {
+        return format(self, "yellowBackground")
+    }
+    var blueBackground: String {
+        return format(self, "blueBackground")
+    }
+    var magentaBackground: String {
+        return format(self, "magentaBackground")
+    }
+    var cyanBackground: String {
+        return format(self, "cyanBackground")
+    }
+    var whiteBackground: String {
+        return format(self, "whiteBackground")
+    }
     
     // formats
-    var bold:String {
-        get {
-            return format(self, "bold");
-        }
-    };
+    var bold: String {
+        return format(self, "bold")
+    }
     
-    var italic:String {
-        get {
-            return format(self, "italic");
-        }
-    };
+    var italic: String {
+        return format(self, "italic")
+    }
     
-    var underline:String {
-        get {
-            return format(self, "underline");
-        }
-    };
+    var underline: String {
+        return format(self, "underline")
+    }
     
-    var reset:String {
-        get {
-            return format(self, "reset");
-        }
-    };
+    var reset: String {
+        return format(self, "reset")
+    }
     
-    var inverse:String {
-        get {
-            return format(self, "inverse");
-        }
-    };
+    var inverse: String {
+        return format(self, "inverse")
+    }
     
-    var strikethrough:String {
-        get {
-            return format(self, "strikethrough");
-        }
-    };
+    var strikethrough: String {
+        return format(self, "strikethrough")
+    }
     
-    var boldOff:String {
-        get {
-            return format(self, "boldOff");
-        }
-    };
+    var boldOff: String {
+        return format(self, "boldOff")
+    }
     
-    var italicOff:String {
-        get {
-            return format(self, "italicOff");
-        }
-    };
+    var italicOff: String {
+        return format(self, "italicOff")
+    }
     
-    var underlineOff:String {
-        get {
-            return format(self, "underlineOff");
-        }
-    };
+    var underlineOff: String {
+        return format(self, "underlineOff")
+    }
     
-    var inverseOff:String {
-        get {
-            return format(self, "inverseOff");
-        }
-    };
+    var inverseOff: String {
+        return format(self, "inverseOff")
+    }
     
-    var strikethroughOff:String {
-        get {
-            return format(self, "strikethroughOff");
-        }
-    };
+    var strikethroughOff: String {
+        return format(self, "strikethroughOff")
+    }
 }
