@@ -45,7 +45,7 @@ var styleCodes:[String:Int] = [
     "strikethroughOff": 29
 ]
 
-func getCode(key:String) -> Int? {
+func getCode(key: String) -> Int? {
     if colorCodes[key] != nil {
         return colorCodes[key]
     }
@@ -59,7 +59,7 @@ func getCode(key:String) -> Int? {
     return nil
 }
 
-func addCodeToCodesArray (codes:Array<Int>, code:Int) -> Array<Int> {
+func addCodeToCodesArray(codes: Array<Int>, code: Int) -> Array<Int> {
     var result:Array<Int> = codes
     
     if colorCodes.values.contains(code) {
@@ -108,7 +108,7 @@ struct ANSIGroup {
     }
 }
 
-func parseExistingANSI(string:String) -> [ANSIGroup] {
+func parseExistingANSI(string: String) -> [ANSIGroup] {
     var results:[ANSIGroup] = []
     
     let matches = matchesForRegexInText("\\u001B\\[([^m]*)m(.+?)\\u001B\\[0m", text: string, global: true)
@@ -124,7 +124,7 @@ func parseExistingANSI(string:String) -> [ANSIGroup] {
     return results
 }
 
-func format(string:String, _ command:String) -> String {
+func format(string: String, _ command: String) -> String {
 
     if (NSProcessInfo.processInfo().environment["DEBUG"] != nil && NSProcessInfo.processInfo().environment["DEBUG"]! as String == "true" && (NSProcessInfo.processInfo().environment["TEST"] == nil || NSProcessInfo.processInfo().environment["TEST"]! as String == "false")) {
         return string
@@ -133,9 +133,9 @@ func format(string:String, _ command:String) -> String {
     let code = getCode(command)
     let existingANSI = parseExistingANSI(string)
     
-    if (code == nil) {
+    if code == nil {
         return string
-    } else if (existingANSI.count > 0) {
+    } else if existingANSI.count > 0 {
         return existingANSI.map {
             return ANSIGroup(codes: addCodeToCodesArray($0.codes, code: code!), string: $0.string).toString()
             }.joinWithSeparator("")
