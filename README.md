@@ -2,7 +2,7 @@ Colors
 ===========
 A pure Swift library for using ANSI codes. Basically makes command-line coloring and styling very easy!
 
-*Note: Colors `master` requires Xcode 6.3 / Swift 1.2.*
+*Note: Colors `master` requires Xcode 7.3 / Swift 2.2.*
 
 Usage
 -----
