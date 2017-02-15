@@ -14,7 +14,7 @@ import Colors
 class ColorsTests: XCTestCase {
     
     func testForegroundColors() {
-        self.measureBlock() {
+        self.measure() {
             XCTAssertEqual("test".black, "\u{001B}[30mtest\u{001B}[0m")
             XCTAssertEqual("test".red, "\u{001B}[31mtest\u{001B}[0m")
             XCTAssertEqual("test".green, "\u{001B}[32mtest\u{001B}[0m")
@@ -38,7 +38,7 @@ class ColorsTests: XCTestCase {
     }
     
     func testBackgroundColors() {
-        self.measureBlock() {
+        self.measure() {
             XCTAssertEqual("test".blackBackground, "\u{001B}[40mtest\u{001B}[0m")
             XCTAssertEqual("test".redBackground, "\u{001B}[41mtest\u{001B}[0m")
             XCTAssertEqual("test".greenBackground, "\u{001B}[42mtest\u{001B}[0m")
@@ -62,7 +62,7 @@ class ColorsTests: XCTestCase {
     }
     
     func testStyles() {
-        self.measureBlock() {
+        self.measure() {
             XCTAssertEqual("test".bold, "\u{001B}[1mtest\u{001B}[0m")
             XCTAssertEqual("test".italic, "\u{001B}[3mtest\u{001B}[0m")
             XCTAssertEqual("test".underline, "\u{001B}[4mtest\u{001B}[0m")
@@ -91,13 +91,13 @@ class ColorsTests: XCTestCase {
     }
 
     func testReset() {
-        self.measureBlock() {
+        self.measure() {
             XCTAssertEqual("test".red.reset, "\u{001B}[mtest\u{001B}[0m")
         }
     }
     
     func testNestedCommands() {
-        self.measureBlock() {
+        self.measure() {
             XCTAssertEqual("test".red.bold.underline, "\u{001B}[31;1;4mtest\u{001B}[0m")
             XCTAssertEqual(("test".red + "test".blue).bold, "\u{001B}[31;1mtest\u{001B}[0m\u{001B}[34;1mtest\u{001B}[0m")
         }
